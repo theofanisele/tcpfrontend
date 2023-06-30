@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="Add Route"
+        android:id="@+id/navigation_add_route"
+        android:icon="@drawable/add_route"/>
+    <item
+        android:title="Statistics"
+        android:id="@+id/navigation_statistics"
+        android:icon="@drawable/statistics" />
+    <item
+        android:title="My Results"
+        android:id="@+id/navigation_my_results"
+        android:icon="@drawable/routes"/>
+</menu>
