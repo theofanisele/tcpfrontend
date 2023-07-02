@@ -20,29 +20,82 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <Button
-            android:id="@+id/elevationButton"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Elevation" />
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/speedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Speed" />
+            <Button
+                android:id="@+id/elevationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Elevation" />
 
-        <Button
-            android:id="@+id/distanceButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Distance" />
+            <TextView
+                android:id="@+id/elevationDiff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""/>
 
-        <Button
-            android:id="@+id/timeButton"
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Time" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/speedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Speed" />
+
+            <TextView
+                android:id="@+id/speedDiff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/distanceButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Distance" />
+
+            <TextView
+                android:id="@+id/distanceDiff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/timeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time" />
+
+            <TextView
+                android:id="@+id/timeDiff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

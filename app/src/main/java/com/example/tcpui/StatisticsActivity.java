@@ -4,13 +4,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+
+import java.util.Locale;
 
 public class StatisticsActivity extends AppCompatActivity {
     private GraphView graphView;
@@ -19,94 +27,96 @@ public class StatisticsActivity extends AppCompatActivity {
     private Double elevation = 0.0;
     private Double time = 0.0;
     private Double distance = 0.0;
+    private Double avgSpeed = 0.0;
+    private Double avgElevation = 0.0;
+    private Double avgTime = 0.0;
+    private Double avgDistance = 0.0;
+    Button elevationButton;
+    Button speedButton;
+    Button distanceButton;
+    Button timeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
+
+        // Initialize buttons
+        elevationButton = findViewById(R.id.elevationButton);
+        speedButton = findViewById(R.id.speedButton);
+        distanceButton = findViewById(R.id.distanceButton);
+        timeButton = findViewById(R.id.timeButton);
+
         graphView = findViewById(R.id.idGraphView);
         BottomNavigationView navView = findViewById(R.id.bottom_navigation);
         setTitle("Statistics");
 
+        // get the saved data from shared preferences
+        SharedPreferences sharedPref = getSharedPreferences("results", MODE_PRIVATE);
+        username = sharedPref.getString("username", "DefaultName");
+        speed = Double.valueOf(sharedPref.getFloat("speed", 0.0f));
+        elevation = Double.valueOf(sharedPref.getFloat("elevation", 0.0f));
+        time = Double.valueOf(sharedPref.getFloat("time", 0.0f));
+        distance = Double.valueOf(sharedPref.getFloat("distance", 0.0f));
 
-        try{
-            Bundle bundle = getIntent().getExtras();
-            username = bundle.getString("username");
-            speed = bundle.getDouble("speed");
-            elevation = bundle.getDouble("elevation");
-            time = bundle.getDouble("time");
-            distance = bundle.getDouble("distance");
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        avgSpeed = Double.valueOf(sharedPref.getFloat("avgSpeed", 0.0f));
+        avgElevation = Double.valueOf(sharedPref.getFloat("avgElevation", 0.0f));
+        avgDistance = Double.valueOf(sharedPref.getFloat("avgDistance", 0.0f));
+        avgTime = Double.valueOf(sharedPref.getFloat("avgTime", 0.0f));
 
 
-        navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        // Rest of your code...
+
+        elevationButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Intent intent;
-                Bundle bundle = new Bundle();
-                bundle.putDouble("speed", speed);
-                bundle.putDouble("elevation", elevation);
-                bundle.putDouble("distance", distance);
-                bundle.putDouble("time", time);
-                bundle.putString("username", username);
-
-                switch (item.getItemId()) {
-                    case R.id.navigation_add_route:
-                        intent = new Intent(StatisticsActivity.this, UploadFileActivity.class);
-
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                        break;
-                    case R.id.navigation_statistics:
-                        intent = new Intent(StatisticsActivity.this, StatisticsActivity.class);
-
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                        break;
-                    case R.id.navigation_my_results:
-                        intent = new Intent(StatisticsActivity.this, MyResultsActivity.class);
-
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                        break;
-                }
-
-                return true;
+            public void onClick(View v) {
+                loadGraphData(elevation, avgElevation);
             }
         });
 
-        // on below line we are adding data to our graph view.
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[]{
-                // on below line we are adding.
-                // each point on our x and y axis.
-                new DataPoint(0, 1),
-                new DataPoint(1, 3),
-                new DataPoint(2, 4),
-                new DataPoint(3, 9),
-                new DataPoint(4, 6),
-                new DataPoint(5, 3),
-                new DataPoint(6, 6),
-                new DataPoint(7, 1),
-                new DataPoint(8, 2)
+        speedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadGraphData(speed, avgSpeed);
+            }
         });
 
-        // after adding data to our line graph series.
-        // on below line we are setting
-        // title for our graph view.
-        graphView.setTitle("My Graph View");
-        // on below line we are setting
-        // text color to our graph view.
-        graphView.setTitleColor(R.color.purple_200);
+        distanceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadGraphData(distance, avgDistance);
+            }
+        });
 
-        // on below line we are setting
-        // our title text size.
-        graphView.setTitleTextSize(18);
+        timeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadGraphData(time, avgTime);
+            }
+        });
+    }
 
-        // on below line we are adding
-        // data series to our graph view.
+    private void loadGraphData(double dataValue, double average) {
+        // Clear any existing data
+        graphView.removeAllSeries();
+
+        // Create an array of DataPoints for your data
+        DataPoint[] dataPoints = new DataPoint[] { new DataPoint(0, dataValue) };
+
+        // Create a BarGraphSeries
+        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(dataPoints);
+
+        // Add series to graph
         graphView.addSeries(series);
+
+        // Draw average line
+        LineGraphSeries<DataPoint> avgSeries = new LineGraphSeries<>(new DataPoint[] {
+                new DataPoint(0, average), new DataPoint(dataPoints.length - 1, average)
+        });
+        avgSeries.setColor(Color.RED);
+        graphView.addSeries(avgSeries);
+
+
     }
 }

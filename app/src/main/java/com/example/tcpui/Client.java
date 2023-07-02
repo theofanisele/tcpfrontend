@@ -16,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 import io.jenetics.jpx.GPX;
 
@@ -25,6 +26,8 @@ public class Client {
     private BufferedOutputStream fos;
     private BufferedReader in;
     private Results results;
+    private Results averages;
+    private Map<String,Double>percDiffCalc;
 
     public Client(String host, int port) {
         try {
@@ -71,13 +74,28 @@ public class Client {
 
     public void receive() throws IOException, ClassNotFoundException {
         String jsonString = in.readLine();
+        String jsonAverages = in.readLine();
+        String jsonPercs = in.readLine();
         Gson gson = new Gson();
         results = gson.fromJson(jsonString, Results.class);
-//        in.close();
+        averages = gson.fromJson(jsonAverages, Results.class);
+        PercentDiffCalculator percentDiffCalculator = gson.fromJson(jsonPercs, PercentDiffCalculator.class);
+        percDiffCalc = percentDiffCalculator.getPercDiffCalc();
 
     }
     public Results getResults(){
         return results;
+    }
+
+    public Results getAverages(){
+        return averages;
+    }
+
+    public PercentDiffCalculator getPercDiffCalculator() {
+        return (PercentDiffCalculator) percDiffCalc;
+    }
+    public Socket getSocket(){
+        return client;
     }
 }
 

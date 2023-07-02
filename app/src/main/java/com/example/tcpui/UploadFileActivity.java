@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -39,6 +40,12 @@ public class UploadFileActivity extends AppCompatActivity {
         btnChooseFile = findViewById(R.id.btnChooseFile);
         btnUpload = findViewById(R.id.btnUpload);
         setTitle("Add route");
+        Intent intent = new Intent(this, ResultService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
 
         BottomNavigationView navView = findViewById(R.id.bottom_navigation);
         try{
